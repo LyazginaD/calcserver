@@ -1,0 +1,18 @@
+services:
+  calculation-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - calculation-net
+    container_name: calculation-server
+    labels:
+      - "author=Daria Lyazgina"
+      - "email=daria.lyazgina@gmail.com"
+      - "maintainer=Daria Lyazgina"
+
+networks:
+  calculation-net:
+    driver: bridge
