@@ -1,11 +1,11 @@
 A client-server application for calculating sums and products of all integers between two selected (inclusive) numbers from the range 1 to 1000.
 
 # Build server image
-docker build -t calc-server -f Dockerfile .
+docker build -t lyazginad/calc:server -f Dockerfile .
 
 To run the server:
 # Create a network
 docker network create calculation-net
 
-# Run the server on the network
-docker run -d --name calculation-server --network calculation-net --restart unless-stopped -p 8080:8080 calc-server
+# Run the server on the network in a new docker terminal
+docker run -it --name calculation-server --network calculation-net --restart unless-stopped -p 8080:8080 lyazginad/calc:server

@@ -21,8 +21,12 @@ public class Server {
     }
 
     private static void handleClient(Socket clientSocket) {
+        System.out.println("Обработка клиента: " + clientSocket.getInetAddress());
+
         try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
              BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+
+            System.out.println("Потоки созданы для клиента: " + clientSocket.getInetAddress());
 
             CalculationServer calculation = new CalculationServer(out, in);
             calculation.flow(); // Запускаем основной поток
@@ -31,6 +35,7 @@ public class Server {
             System.out.println("Ошибка при обработке клиента: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Общая ошибка: " + e.getMessage());
+            e.printStackTrace();
         } finally {
             try {
                 clientSocket.close();

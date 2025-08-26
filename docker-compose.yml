@@ -1,12 +1,11 @@
 services:
   calculation-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: lyazginad/calc:server
     ports:
       - "8080:8080"
     networks:
       - calculation-net
+    restart: unless-stopped
     container_name: calculation-server
     labels:
       - "author=Daria Lyazgina"
