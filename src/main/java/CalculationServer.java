@@ -6,14 +6,15 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class CalculationServer {
-    private String placeInScript;
-    private String input;
-    private int firstNum;
-    private int secondNum;
+    public String placeInScript;
+    public String input;
+    public int firstNum;
+    public int secondNum;
     private BigInteger bigIntResult;
-    private PrintWriter out;
-    private BufferedReader in;
+    public PrintWriter out;
+    public BufferedReader in;
     private boolean isFirstRun;
+    public String textResult;
 
     public CalculationServer(PrintWriter out, BufferedReader in) {
         this.out = out;
@@ -24,6 +25,7 @@ public class CalculationServer {
         this.secondNum = 0;
         this.bigIntResult = null;
         this.isFirstRun = true;
+        this.textResult = null;
     }
 
     private String readInput() throws IOException {
@@ -35,26 +37,26 @@ public class CalculationServer {
         out.flush();
     }
 
-    private void setAndGetConsoleText() throws IOException {
+    public void setAndGetConsoleText() throws IOException {
         boolean condition = false;
 
         do {
             switch (placeInScript) {
                 case "start" -> {
                     sendOutput("Чтобы начать, введите: s");
-                    sendOutput("Чтобы выйти, введите: q\n");
+                    sendOutput("Чтобы выйти, введите: q");
                     input = readInput();
                     if (Objects.equals(input, "q")) {
                         exitOnQ();
                     } else if (Objects.equals(input, "s")) {
                         condition = true;
                     } else {
-                        sendOutput("Неверный ввод. Пожалуйста, введите 's' или 'q'\n");
+                        sendOutput("Неверный ввод. Пожалуйста, введите 's' или 'q'");
                     }
                 }
                 case "numbers" -> {
                     sendOutput("Это должно быть целое число, в диапазоне от 0 до 1000:");
-                    sendOutput("Чтобы завершить работу, введите: q\n");
+                    sendOutput("Чтобы завершить работу, введите: q");
                     input = readInput();
                     if (Objects.equals(input, "q")) {
                         exitOnQ();
@@ -69,7 +71,7 @@ public class CalculationServer {
                     sendOutput("Чтобы вывести суммы всех чисел от 0 до каждого из выбранных, введите: +0");
                     sendOutput("Чтобы вывести произведение всех чисел между выбранными, введите: *");
                     sendOutput("Чтобы вывести суммы всех чисел от 0 до каждого из выбранных, сумму и произведение всех чисел между выбранными, введите: +*");
-                    sendOutput("Чтобы завершить работу, введите: q\n");
+                    sendOutput("Чтобы завершить работу, введите: q");
                     input = readInput();
                     switch (input) {
                         case "+0", "+" -> {
@@ -93,7 +95,7 @@ public class CalculationServer {
         } while (!condition);
     }
 
-    private int getSumResult(int number1, int number2) {
+    public int getSumResult(int number1, int number2) {
         if (number1 == number2) {
             return number1 * 2;
         }
@@ -103,7 +105,7 @@ public class CalculationServer {
         return 0;
     }
 
-    private void printSumResult() {
+    public void printSumResult() {
         String message;
         if (Objects.equals(input, "+0") || Objects.equals(input, "+*")) {
             message = "Сумма всех чисел от 0 до";
@@ -121,7 +123,7 @@ public class CalculationServer {
         }
     }
 
-    private void getMultiplicationResult() {
+    public void getMultiplicationResult() {
         if (firstNum == secondNum) {
             bigIntResult = BigInteger.valueOf(firstNum).multiply(BigInteger.valueOf(secondNum));
             sendOutput("Произведение всех чисел от меньшего до большего включительно: " + bigIntResult);
@@ -142,8 +144,9 @@ public class CalculationServer {
                 BigDecimal divisor = new BigDecimal("1E" + exponent);
                 BigDecimal roundedDecimal = bigDecimal.divide(divisor, 1, RoundingMode.HALF_UP);
 
-                sendOutput(String.format("Произведение всех чисел от меньшего до большего включительно приблизительно равно: %s * 10^%d",
-                        roundedDecimal.stripTrailingZeros().toPlainString(), exponent));
+                textResult = String.format("Произведение всех чисел от меньшего до большего включительно приблизительно равно: %s * 10^%d", roundedDecimal.stripTrailingZeros().toPlainString(), exponent);
+
+                sendOutput(textResult);
             }
         }
     }
@@ -159,11 +162,11 @@ public class CalculationServer {
             }
 
             placeInScript = "numbers";
-            sendOutput("Пожалуйста, введите первое число: \n");
+            sendOutput("Пожалуйста, введите первое число: ");
             setAndGetConsoleText();
             firstNum = Integer.parseInt(input);
 
-            sendOutput("Пожалуйста, введите второе число: \n");
+            sendOutput("Пожалуйста, введите второе число: ");
             setAndGetConsoleText();
             secondNum = Integer.parseInt(input);
 
@@ -185,7 +188,7 @@ public class CalculationServer {
     public boolean offerRestart() throws IOException {
         sendOutput("============================================");
         sendOutput("Чтобы начать заново, введите: s");
-        sendOutput("Чтобы выйти, введите: q\n");
+        sendOutput("Чтобы выйти, введите: q");
 
         while (true) {
             input = readInput();
@@ -197,7 +200,7 @@ public class CalculationServer {
                 sendOutput("============================================");
                 return true;
             } else {
-                sendOutput("Неверный ввод. Пожалуйста, введите 's' или 'q'\n");
+                sendOutput("Неверный ввод. Пожалуйста, введите 's' или 'q' ");
             }
         }
     }
@@ -219,7 +222,7 @@ public class CalculationServer {
         sendOutput("============================================");
     }
 
-    private void getMinAndMax() {
+    public void getMinAndMax() {
         int[] array = {firstNum, secondNum};
         Arrays.sort(array);
         firstNum = array[0];
